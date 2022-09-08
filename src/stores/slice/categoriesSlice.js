@@ -20,7 +20,6 @@ const cateSlice=createSlice({
     extraReducers:(builder)=>{
         builder
             .addCase(getCategories.fulfilled,(state,action)=>{
-                console.log("fullfileed");
                 state.list.push(action.payload.items);
             })
             .addCase(getCategories.rejected,(state,action)=>{

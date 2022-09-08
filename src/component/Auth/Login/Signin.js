@@ -1,34 +1,14 @@
-import { useDispatch } from "react-redux/es/exports";
+import { useDispatch, useSelector } from "react-redux/es/exports";
 import { loginUser } from "../../../utils/apiRequest";
 import { useFormik } from "formik";
 import * as Yup from "yup"
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import "./login.scss"
+import authSlice from "../../../stores/slice/authSlice";
 function Signin({changeAuthMode}) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [disable,setDisable]=useState(true)
-
-  const [username, setusername] = useState("");
-  const [password, setPassword] = useState("");
-  const onChangeUsername=(e)=>{
-    setusername(e.target.value.trim());
-  }
-  const onChanePassword=(e)=>{
-    setPassword(e.target.value.trim());
-  }
-  const handleSubmitLogin = (e) => {
-    e.preventDefault();
-    const user = {
-      username: username,
-      password: password,
-    };
-    loginUser(user, dispatch, navigate);
-  };
-
-
-
   const formik =useFormik({
     initialValues:{
       username:"",
@@ -39,16 +19,12 @@ function Signin({changeAuthMode}) {
       password:Yup.string().required().min(6,'min 6 char')
     }),
     onSubmit:(user)=>{
-      // console.log(values)
       loginUser(user, dispatch, navigate);
     }
   });
-  useEffect(()=>{
-    // console.log(formik.errors)
-    if(formik.errors ==={}) console.log('true')
-  },[formik.errors])
-  // console.log(!formik.errors)
-
+ 
+  const err =useSelector((state)=> state.auth.error)
+  
   return (
     <div className="Auth-form-container">
       <form className="Auth-form" onSubmit={formik.handleSubmit}>
@@ -93,6 +69,7 @@ function Signin({changeAuthMode}) {
             <button type="submit" className="btn btn-primary" disabled={!formik.isValid}>
               Submit
             </button>
+            <label className="text-error">{err}</label>
           </div>
          
         </div>
