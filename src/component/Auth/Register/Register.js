@@ -1,29 +1,41 @@
-import { useState } from "react";
-import axios from "axios";
 
+import { useDispatch,useSelector } from "react-redux";
+import { registerFailed } from "../../../stores/slice/authSlice";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { ApiClient } from "../../../request/request";
 function Register({ changeAuthMode }) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmpw, setConfirmpw] = useState("");
-  const [valueda, setValueda] = useState("");
+  const dispatch = useDispatch();
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+      confirmpw: "",
+    },
+    validationSchema: Yup.object({
+      username: Yup.string().required("Reqiued"),
+      password: Yup.string().required("Reqiued").min(6, "min 6 char"),
+      confirmpw: Yup.string()
+        .required("Reqiued")
+        .oneOf([Yup.ref("password"), null], "password must match"),
+    }),
+    onSubmit: (user) => {},
+  });
+
   const handleRegister = (e) => {
     e.preventDefault();
-    if (password !== confirmpw) setValueda("sai mk");
-    else if (!username && !password && !confirmpw)
-      setValueda("Vui long dien day du");
-    else {
-      setValueda("");
-      axios
-        .post("https://www.task-manager.api.mvn-training.com/auth/register", {
-          username: username,
-          password: password,
-        })
-        .then((res) => {
-          res.status === 201 ? alert("Success") : alert("failed");
-        });
-    }
+    ApiClient.post("/auth/register", {
+      username: formik.values.username,
+      password: formik.values.password,
+    })
+      .then((res) => {
+        res.status === 201 ? alert("Success") : alert("failed");
+      })
+      .catch((error) => {
+        dispatch(registerFailed(error.response.data.message));
+      });
   };
-
+  const errorRegister =useSelector((state)=> state.auth.errorRegister)
   return (
     <div className="Auth-form-container">
       <form className="Auth-form">
@@ -38,45 +50,56 @@ function Register({ changeAuthMode }) {
           <div className="form-group mt-3">
             <label>Usename</label>
             <input
+              id="username"
               type="text"
               className="form-control mt-1"
               placeholder="e.g Jane Doe"
-              onChange={(e) => {
-                setUsername(e.target.value);
-              }}
+              value={formik.values.username}
+              onChange={formik.handleChange}
             />
+            {formik.errors.username && (
+              <label className="text-error">{formik.errors.username}</label>
+            )}
           </div>
           <div className="form-group mt-3">
             <label>Password</label>
             <input
+              id="password"
               type="password"
               className="form-control mt-1"
               placeholder="Email Address"
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
+              value={formik.values.password}
+              onChange={formik.handleChange}
             />
+            {formik.errors.password && (
+              <label className="text-error">{formik.errors.password}</label>
+            )}
           </div>
           <div className="form-group mt-3">
             <label>Confirm Password</label>
             <input
+              id="confirmpw"
               type="password"
               className="form-control mt-1"
               placeholder="Password"
-              onChange={(e) => {
-                setConfirmpw(e.target.value);
-              }}
+              value={formik.values.confirmpw}
+              onChange={formik.handleChange}
             />
+            {formik.errors.confirmpw && (
+              <label className="text-error">{formik.errors.confirmpw}</label>
+            )}
           </div>
-          <label>{valueda}</label>
+
           <div className="d-grid gap-2 mt-3">
             <button
               type="submit"
               className="btn btn-primary"
+              disabled={!formik.isValid}
               onClick={handleRegister}
             >
               Submit
             </button>
+            <label className="text-error">{errorRegister}</label>
           </div>
         </div>
       </form>

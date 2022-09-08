@@ -4,8 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup"
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import "./login.scss"
-import authSlice from "../../../stores/slice/authSlice";
+import "./SignIn.scss"
 function Signin({changeAuthMode}) {
   const navigate = useNavigate();
   const dispatch = useDispatch();

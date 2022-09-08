@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { ApiClient } from "../../request/request";
-import { handleStorageToken } from "../../utils/auth.util";
 
 const authSlice = createSlice({
   name: "auth",
@@ -9,6 +8,7 @@ const authSlice = createSlice({
       currenUser: null,
     },
     error: '',
+    errorRegister:''
   },
   reducers: {
     loginStart: (state) => {
@@ -20,8 +20,10 @@ const authSlice = createSlice({
       state.login.error = false;
     },
     loginFailed: (state,action) => {
-      // console.log(action.payload)
       state.error=action.payload;
+    },
+    registerFailed:(state,action) => {
+      state.errorRegister=action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -48,5 +50,5 @@ export const signin = createAsyncThunk(
     }
   }
 );
-export const { loginStart, loginFailed, loginSuccess } = authSlice.actions;
+export const { loginStart, loginFailed, loginSuccess,registerFailed } = authSlice.actions;
 export default authSlice;
