@@ -13,20 +13,20 @@ const requestHandler = (config) => {
   return config;
 };
 
-// const responseErrorHandler = async (error) => {
-//   if (error?.response?.status === 401) {
-//     logout();
-//   }
-//   const data= error?.response?.data;
-//   const message = data?.message;
+const responseErrorHandler = async (error) => {
+  if (error?.response?.status === 401) {
+    logout();
+    // console.log('401')
+  }
+  // const data= error?.response?.data;
+  // const message = data?.message;
 
-//   if (message) {
-//     throw new Error(message);
-//   }
-//   return Promise.reject(error);
-// };
-// axiosInstance.interceptors.response.use((response) => response, responseErrorHandler);
-axiosInstance.interceptors.request.use(requestHandler, (err) =>
-  Promise.reject(err)
-);
+  // if (message) {
+  //   throw new Error(message);
+  // }
+  return Promise.reject(error);
+};
+axiosInstance.interceptors.response.use((response) => response,responseErrorHandler);
+axiosInstance.interceptors.request.use(requestHandler, (err) =>Promise.reject(err));
+
 export { axiosInstance as ApiClient };

@@ -1,11 +1,14 @@
 
+import { ApiClient } from "../../../request/request";
 import { useDispatch,useSelector } from "react-redux";
 import { registerFailed } from "../../../stores/slice/authSlice";
+import { useNavigate } from "react-router-dom";
+
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { ApiClient } from "../../../request/request";
 function Register({ changeAuthMode }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -19,7 +22,7 @@ function Register({ changeAuthMode }) {
         .required("Reqiued")
         .oneOf([Yup.ref("password"), null], "password must match"),
     }),
-    onSubmit: (user) => {},
+    // onSubmit: (user) => {},
   });
 
   const handleRegister = (e) => {
@@ -30,6 +33,7 @@ function Register({ changeAuthMode }) {
     })
       .then((res) => {
         res.status === 201 ? alert("Success") : alert("failed");
+        navigate("/");
       })
       .catch((error) => {
         dispatch(registerFailed(error.response.data.message));
