@@ -14,8 +14,8 @@ const cx = classNames.bind(styles);
 function Category({ data }) {
   const dispatch = useDispatch();
   const [tasknname, setTaskname] = useState("");
-  const [btnupdate, setBtnupdate] = useState(false);
   const [getidtask, setGetidtask] = useState("");
+  const [btnupdate, setBtnupdate] = useState(false);
 
   const task = useSelector(taskSelector);
   const searchText=useSelector(searchTextSelector)

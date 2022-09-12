@@ -35,9 +35,9 @@ function ChangePassword() {
     await ApiClient.patch(`/api/users/${localStorage.getItem("id")}`, user)
       .then((res) => {
         if (res.status === 200) {
+          alert("Success");
           handleClose();
           loginUser(newUser, dispatch, navigate);
-          alert("Success");
         }
       })
       .catch((err) => {});
